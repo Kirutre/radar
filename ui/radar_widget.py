@@ -2,8 +2,8 @@ import sys
 import math
 
 from PySide6.QtWidgets import QWidget, QApplication
-from PySide6.QtGui import QPainter, QColor, QPen
-from PySide6.QtCore import QRectF, QSize
+from PySide6.QtGui import QPainter, QColor, QPen, QBrush
+from PySide6.QtCore import QRectF, QSize, Qt
 
 from colors import radar_colors
 
@@ -15,7 +15,6 @@ class RadarWidget(QWidget):
         super().__init__()
         
         self.setMinimumSize(QSize(400, 250))
-        self.setStyleSheet("background-color: #1a1a1a;")
 
     def sizeHint(self):
         return QSize(400, 250)
@@ -29,6 +28,8 @@ class RadarWidget(QWidget):
         center_y = self.height()
         
         max_radius = min(center_x, center_y)
+        
+        self.fill_background(painter, center_x, center_y, max_radius)
         
         self.draw_circles(painter, center_x, center_y, max_radius)
         
@@ -71,6 +72,21 @@ class RadarWidget(QWidget):
             end_y = center_y - max_radius * math.sin(angle_rad)
             
             painter.drawLine(center_x, center_y, end_x, end_y)
+
+
+    def fill_background(self, painter: QPainter, center_x: float, center_y: float, max_radius: float) -> None:       
+        color = QColor(radar_colors['BACKGROUND'])
+        color.setAlpha(50)
+        
+        brush_style = Qt.BrushStyle.SolidPattern
+        
+        brush = QBrush(color, brush_style)
+        
+        painter.setBrush(brush)
+        
+        rect_arc = QRectF(center_x - max_radius, center_y - max_radius, 2 * max_radius, 2 * max_radius)
+        
+        painter.drawPie(rect_arc, 0 * 16, 180 * 16)
 
 
 if __name__ == "__main__":
