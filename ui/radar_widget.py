@@ -1,23 +1,60 @@
-import sys
 import math
 
-from PySide6.QtWidgets import QWidget, QApplication
+from PySide6.QtWidgets import QWidget
 from PySide6.QtGui import QPainter, QColor, QPen, QBrush
-from PySide6.QtCore import QRectF, QSize, Qt
+from PySide6.QtCore import QRectF, QSize, Qt, QTimer, QPointF, Slot
 
 from colors import radar_colors
+from serial_conection import SerialReader
 
 
 class RadarWidget(QWidget):
+    MAX_DISTANCE = 60
     NUM_RADIAL_LINES = 10
 
-    def __init__(self):
+    def __init__(self) -> None:
         super().__init__()
         
         self.setMinimumSize(QSize(400, 250))
+        
+        self.serial_reader = SerialReader(port_name='COM3')
+        self.serial_reader.open_port()
+        
+        self.targets = []
+        
+        self.animation_timer = QTimer(self)
+        self.animation_timer.timeout.connect(self.update_radar)
+        self.animation_timer.start(50)
+        
+        self.serial_reader.data_received.connect(self.add_detection)
 
     def sizeHint(self):
         return QSize(400, 250)
+
+
+
+    def update_radar(self) -> None:
+        for target in self.targets[:]:
+            target['opacity'] -= 0.05
+            if target['opacity'] <= 0:
+                self.targets.remove(target)
+    
+        self.update() 
+
+
+    @Slot(int, int)
+    def add_detection(self, distance: int, angle: int) -> None:
+        if distance > 0 and distance <= self.MAX_DISTANCE:
+            
+            self.targets.append({
+                'distance': distance,
+                'angle': angle,
+                'opacity': 1.0
+            })
+            
+            if len(self.targets) > 50:
+                self.targets.pop(0)
+
 
     def paintEvent(self, event):
         painter = QPainter(self)
@@ -34,6 +71,8 @@ class RadarWidget(QWidget):
         self.draw_circles(painter, center_x, center_y, max_radius)
         
         self.draw_diagonals(painter, center_x, center_y, max_radius)
+        
+        self.draw_targets(painter, center_x, center_y, max_radius)
         
         painter.end()
 
@@ -87,9 +126,39 @@ class RadarWidget(QWidget):
         rect_arc = QRectF(center_x - max_radius, center_y - max_radius, 2 * max_radius, 2 * max_radius)
         
         painter.drawPie(rect_arc, 0 * 16, 180 * 16)
+        
+    
+    def draw_targets(self, painter: QPainter, center_x: float, center_y: float, max_radius: float) -> None:
+        for target in self.targets:
+            distance = target['distance']
+            angle_deg = target['angle']
+            opacity = target['opacity']
+            
+            distance_ratio = min(distance / self.MAX_DISTANCE, 1.0)
+            target_radius = max_radius * distance_ratio
+            
+            
+            angle_rad = math.radians(angle_deg)
+            target_x = center_x + target_radius * math.cos(angle_rad)
+            target_y = center_y - target_radius * math.sin(angle_rad)
+            
+            
+            color = QColor(radar_colors['TARGET'])
+            color.setAlpha(int(255 * opacity))
+            
+            brush = QBrush(color)
+            
+            painter.setBrush(brush)
+            painter.setPen(Qt.PenStyle.NoPen)
+            
+            point_size = 6 
+            painter.drawEllipse(QPointF(target_x, target_y), point_size, point_size)
 
 
 if __name__ == "__main__":
+    import sys
+    from PySide6.QtWidgets import QApplication
+    
     app = QApplication(sys.argv)
         
     window = RadarWidget()
