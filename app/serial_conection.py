@@ -5,7 +5,7 @@ from PySide6.QtCore import QObject, Signal, QIODevice
 class SerialReader(QObject):
     data_received = Signal(int, int)
     
-    def __init__(self, port_name: str, baud_rate: int = 9600) -> None:
+    def __init__(self, port_name: str = 'COM3', baud_rate: int = 9600) -> None:
         super().__init__()
         
         self.serial_port = QSerialPort()
@@ -64,20 +64,13 @@ if __name__ == '__main__':
     from PySide6.QtWidgets import QApplication
     import sys
 
-    PORT_NAME = 'COM3' 
-
-    if PORT_NAME:
-        print(f"Intentando usar el puerto: {PORT_NAME}")
-        app = QApplication(sys.argv)
+    app = QApplication(sys.argv)
+    
+    reader = SerialReader()
+    
+    if reader.open_port():
+        sys.exit(app.exec())
         
-        reader = SerialReader(port_name=PORT_NAME)
-        
-        if reader.open_port():
-            sys.exit(app.exec())
-            
-        else:
-            print("Fallo al abrir el puerto. Terminando aplicación.")
-            
     else:
-        print("ERROR: No se encontraron puertos seriales disponibles.")
+        print("Fallo al abrir el puerto. Terminando aplicación.")
     

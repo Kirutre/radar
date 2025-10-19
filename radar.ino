@@ -15,7 +15,7 @@ Servo engine;
 
 const int delay_between_angle = 20;
 
-int current_engine_angle = LEFT;
+int current_engine_angle = 90;
 int direction_movement = 1;
 
 void setup(){
@@ -25,7 +25,7 @@ void setup(){
   digitalWrite(TRIGGER, LOW);
 
   engine.attach(ENGINE);
-  engine.write(LEFT);
+  engine.write(current_engine_angle);
 
   Serial.begin(9600);
 }
