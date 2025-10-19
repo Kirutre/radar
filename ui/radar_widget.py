@@ -11,6 +11,7 @@ from serial_conection import SerialReader
 class RadarWidget(QWidget):
     MAX_DISTANCE = 60
     NUM_RADIAL_LINES = 10
+    SWEEP_SPAN = 15.0
 
     def __init__(self) -> None:
         super().__init__()
@@ -21,29 +22,36 @@ class RadarWidget(QWidget):
         self.serial_reader.open_port()
         
         self.targets = []
+        self.sweep_angle = 0.0
         
         self.animation_timer = QTimer(self)
         self.animation_timer.timeout.connect(self.update_radar)
         self.animation_timer.start(50)
         
-        self.serial_reader.data_received.connect(self.add_detection)
+        self.serial_reader.data_received.connect(self.receive_data_arduino)
 
     def sizeHint(self):
         return QSize(400, 250)
 
 
-
-    def update_radar(self) -> None:
+    def update_radar(self) -> None:        
+        self.fade_target()
+    
+        self.update()
+    
+    
+    def fade_target(self) -> None:
         for target in self.targets[:]:
             target['opacity'] -= 0.05
+            
             if target['opacity'] <= 0:
                 self.targets.remove(target)
-    
-        self.update() 
 
 
     @Slot(int, int)
-    def add_detection(self, distance: int, angle: int) -> None:
+    def receive_data_arduino(self, distance: int, angle: int) -> None:
+        self.sweep_angle = float(angle)
+        
         if distance > 0 and distance <= self.MAX_DISTANCE:
             
             self.targets.append({
@@ -71,6 +79,8 @@ class RadarWidget(QWidget):
         self.draw_circles(painter, center_x, center_y, max_radius)
         
         self.draw_diagonals(painter, center_x, center_y, max_radius)
+        
+        self.draw_sweep(painter, center_x, center_y, max_radius)
         
         self.draw_targets(painter, center_x, center_y, max_radius)
         
@@ -153,6 +163,23 @@ class RadarWidget(QWidget):
             
             point_size = 6 
             painter.drawEllipse(QPointF(target_x, target_y), point_size, point_size)
+            
+    
+    def draw_sweep(self, painter: QPainter, center_x: float, center_y: float, max_radius: float) -> None:
+        start_angle = self.sweep_angle - (self.SWEEP_SPAN / 2.0)
+        span_angle = self.SWEEP_SPAN
+        
+        color = QColor(radar_colors['SWEEP'])
+        color.setAlpha(60)
+        
+        brush = QBrush(color)
+        
+        painter.setBrush(brush)
+        painter.setPen(Qt.PenStyle.NoPen)
+
+        rect_arc = QRectF(center_x - max_radius, center_y - max_radius, 2 * max_radius, 2 * max_radius)
+
+        painter.drawPie(rect_arc, int(start_angle * 16), int(span_angle * 16))
 
 
 if __name__ == "__main__":

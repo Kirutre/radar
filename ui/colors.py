@@ -10,7 +10,8 @@ class QColorDict(TypedDict):
 
 radar_colors: QColorDict = {
     'BACKGROUND': "#003200",
-    'CIRCLE': '#00cc00',
+    'CIRCLE': '#00CC00',
     'LINE': '#339933',
-    'TARGET': "#036903"
+    'TARGET': "#04FF04",
+    'SWEEP': "#19A119"
 }
