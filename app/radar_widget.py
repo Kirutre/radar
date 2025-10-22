@@ -16,8 +16,8 @@ class RadarWidget(QWidget):
     MIN_ANGLE_DIFFERENCE = 10.0
     TARGET_SVG_PATH = 'airplane.svg'
 
-    def __init__(self, port_name: str = 'COM3') -> None:
-        super().__init__()
+    def __init__(self, parent, port_name: str = 'COM3') -> None:
+        super().__init__(parent)
 
         self.setMinimumSize(QSize(400, 250))
 
