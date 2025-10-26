@@ -5,12 +5,11 @@ from PySide6.QtGui import QPainter, QColor, QPen, QBrush
 from PySide6.QtCore import QRectF, QSize, Qt, QTimer, Slot
 from PySide6.QtSvg import QSvgRenderer
 
-from colors import radar_colors
+from colors import radar_colors as colors
 from serial_conection import SerialReader
 
 
 class RadarWidget(QWidget):
-    MAX_DISTANCE = 30
     NUM_RADIAL_LINES = 10
     SWEEP_SPAN = 15.0
     MIN_ANGLE_DIFFERENCE = 10.0
@@ -18,8 +17,12 @@ class RadarWidget(QWidget):
 
     def __init__(self, parent, port_name: str = 'COM3') -> None:
         super().__init__(parent)
+        
+        self.radar_colors = colors
 
         self.setMinimumSize(QSize(400, 250))
+        
+        self.max_distance = 30
 
         self.serial_reader = SerialReader(port_name)
         self.serial_reader.open_port()
@@ -68,7 +71,7 @@ class RadarWidget(QWidget):
         if abs(angle - self.last_detected_angle) < self.MIN_ANGLE_DIFFERENCE:
             return
 
-        if distance > 0 and distance <= self.MAX_DISTANCE:
+        if distance > 0 and distance <= self.max_distance:
 
             self.targets.append({
                 'distance': distance,
@@ -109,7 +112,7 @@ class RadarWidget(QWidget):
         for i in range(1, 11):
             radius = i * (max_radius / 10)
 
-            color = QColor(radar_colors['CIRCLE'])
+            color = QColor(self.radar_colors['CIRCLE'])
 
             pen = QPen(color, 2)
 
@@ -121,7 +124,7 @@ class RadarWidget(QWidget):
 
 
     def draw_diagonals(self, painter: QPainter, center_x: float, center_y: float, max_radius: float) -> None:
-        color = QColor(radar_colors['LINE'])
+        color = QColor(self.radar_colors['LINE'])
 
         pen = QPen(color, 1)
 
@@ -142,7 +145,7 @@ class RadarWidget(QWidget):
 
 
     def fill_background(self, painter: QPainter, center_x: float, center_y: float, max_radius: float) -> None:       
-        color = QColor(radar_colors['BACKGROUND'])
+        color = QColor(self.radar_colors['BACKGROUND'])
         color.setAlpha(50)
 
         brush_style = Qt.BrushStyle.SolidPattern
@@ -157,7 +160,7 @@ class RadarWidget(QWidget):
 
 
     def draw_targets(self, painter: QPainter, center_x: float, center_y: float, max_radius: float) -> None:
-        color = radar_colors['TARGET']
+        color = self.radar_colors['TARGET']
 
         svg_content_template = self.svg_data.decode('utf-8')
 
@@ -172,7 +175,7 @@ class RadarWidget(QWidget):
             angle_deg = target['angle']
             opacity = target['opacity']
 
-            distance_ratio = min(distance / self.MAX_DISTANCE, 1.0)
+            distance_ratio = min(distance / self.max_distance, 1.0)
             target_radius = max_radius * distance_ratio
 
             angle_rad = math.radians(angle_deg)
@@ -200,7 +203,7 @@ class RadarWidget(QWidget):
         start_angle = self.sweep_angle - (self.SWEEP_SPAN / 2.0)
         span_angle = self.SWEEP_SPAN
 
-        color = QColor(radar_colors['SWEEP'])
+        color = QColor(self.radar_colors['SWEEP'])
         color.setAlpha(60)
 
         brush = QBrush(color)

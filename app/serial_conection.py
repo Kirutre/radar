@@ -1,5 +1,5 @@
 from PySide6.QtSerialPort import QSerialPort
-from PySide6.QtCore import QObject, Signal, QIODevice
+from PySide6.QtCore import QObject, Signal, QIODevice, QByteArray
 
 
 class SerialReader(QObject):
@@ -17,20 +17,19 @@ class SerialReader(QObject):
     
     def open_port(self) -> None:
         if self.serial_port.isOpen():
-            print("INFO: El puerto ya está abierto.")
+            print('El puerto ya está abierto.')
             
             return True
         
-        # Solo lectura
-        if self.serial_port.open(QIODevice.ReadOnly):
-            print(f"INFO: Conectado a {self.serial_port.portName()} exitosamente.")
+        if self.serial_port.open(QIODevice.OpenModeFlag.ReadWrite):
+            print(f'Conectado a {self.serial_port.portName()} exitosamente.')
             
             self.serial_port.clear()
             
             return True
         
         else:
-            print(f"ERROR: No se pudo abrir el puerto: {self.serial_port.errorString()}")
+            print(f'ERROR: No se pudo abrir el puerto: {self.serial_port.errorString()}')
             
             return False
 
@@ -39,7 +38,7 @@ class SerialReader(QObject):
         if self.serial_port.isOpen():
             self.serial_port.close()
             
-            print("INFO: Puerto serial cerrado.")
+            print('Puerto serial cerrado.')
 
 
     def handle_serial_data(self) -> None:
@@ -57,7 +56,13 @@ class SerialReader(QObject):
                 self.data_received.emit(distance, angle)
                 
             except Exception as e:
-                print(f"ERROR al procesar datos seriales: {e}")
+                print(f'ERROR al procesar datos seriales: {e}')
+       
+                
+    def send_data(self, data: str):
+        data_bytes = data.encode()
+        
+        self.serial_port.write(data_bytes)
 
      
 if __name__ == '__main__':
@@ -72,5 +77,5 @@ if __name__ == '__main__':
         sys.exit(app.exec())
         
     else:
-        print("Fallo al abrir el puerto. Terminando aplicación.")
+        print('Fallo al abrir el puerto.')
     

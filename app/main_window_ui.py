@@ -20,61 +20,13 @@ from PySide6.QtWidgets import (QApplication, QComboBox, QGridLayout, QLabel,
     QSizePolicy, QSpacerItem, QWidget)
 
 from radar_widget import RadarWidget
-from colors import radar_colors
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         if not MainWindow.objectName():
             MainWindow.setObjectName(u"MainWindow")
         MainWindow.resize(882, 600)
-        MainWindow.setStyleSheet(f"""
-        QLabel {{
-            color: {radar_colors['LINE']};
-        }}
 
-        QPushButton {{
-            background-color: transparent;
-
-            border: 2px solid {radar_colors['LINE']};
-            border-radius: 5px;
-
-            color: {radar_colors['LINE']};
-        }}
-
-        QLineEdit {{
-            background-color: transparent;
-
-            border: 2px solid {radar_colors['LINE']};
-            border-radius: 5px;
-
-            color: {radar_colors['LINE']};
-        }}
-
-        QComboBox {{
-            background-color: transparent;
-
-            border: 2px solid {radar_colors['LINE']};
-            border-radius: 5px;
-
-            color: {radar_colors['LINE']};
-
-            padding: 1px 18px 1px 3px;
-        }}
-
-        QComboBox::drop-down {{
-            background-color: transparent;
-
-            border: none;
-        }}
-
-        QComboBox QAbstractItemView {{
-            border: 2px solid {radar_colors['LINE']};
-
-            background-color: transparent;
-            selection-background-color: {radar_colors['LINE']};
-
-            color: {radar_colors['LINE']};
-        }}""")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
@@ -99,36 +51,66 @@ class Ui_MainWindow(object):
         self.widget_2.setObjectName(u"widget_2")
         self.gridLayout_2 = QGridLayout(self.widget_2)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.change_mode_combo_box = QComboBox(self.widget_2)
-        self.change_mode_combo_box.addItem("")
-        self.change_mode_combo_box.addItem("")
-        self.change_mode_combo_box.addItem("")
-        self.change_mode_combo_box.setObjectName(u"change_mode_combo_box")
+        self.change_color_label = QLabel(self.widget_2)
+        self.change_color_label.setObjectName(u"change_color_label")
 
-        self.gridLayout_2.addWidget(self.change_mode_combo_box, 6, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.change_color_label, 7, 0, 1, 1)
 
-        self.detection_distance_line_edit = QLineEdit(self.widget_2)
-        self.detection_distance_line_edit.setObjectName(u"detection_distance_line_edit")
+        self.radar_title_label = QLabel(self.widget_2)
+        self.radar_title_label.setObjectName(u"radar_title_label")
 
-        self.gridLayout_2.addWidget(self.detection_distance_line_edit, 2, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.radar_title_label, 1, 0, 1, 2)
+
+        self.horizontalSpacer_10 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_2.addItem(self.horizontalSpacer_10, 10, 0, 1, 2)
+
+        self.change_detection_distance_button = QPushButton(self.widget_2)
+        self.change_detection_distance_button.setObjectName(u"change_detection_distance_button")
+
+        self.gridLayout_2.addWidget(self.change_detection_distance_button, 5, 0, 1, 2)
+
+        self.change_mode_label = QLabel(self.widget_2)
+        self.change_mode_label.setObjectName(u"change_mode_label")
+
+        self.gridLayout_2.addWidget(self.change_mode_label, 11, 0, 1, 1)
 
         self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_2.addItem(self.horizontalSpacer_2, 5, 0, 1, 2)
+        self.gridLayout_2.addItem(self.horizontalSpacer_2, 6, 0, 1, 2)
 
-        self.change_color_button = QPushButton(self.widget_2)
-        self.change_color_button.setObjectName(u"change_color_button")
+        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.gridLayout_2.addWidget(self.change_color_button, 4, 1, 1, 1)
+        self.gridLayout_2.addItem(self.verticalSpacer, 0, 0, 1, 1)
+
+        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+
+        self.gridLayout_2.addItem(self.verticalSpacer_2, 17, 0, 1, 1)
+
+        self.horizontalSpacer_8 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_2.addItem(self.horizontalSpacer_8, 9, 0, 1, 2)
+
+        self.change_color_combo_box = QComboBox(self.widget_2)
+        self.change_color_combo_box.addItem("")
+        self.change_color_combo_box.addItem("")
+        self.change_color_combo_box.addItem("")
+        self.change_color_combo_box.setObjectName(u"change_color_combo_box")
+
+        self.gridLayout_2.addWidget(self.change_color_combo_box, 7, 1, 1, 1)
 
         self.detection_distance_label = QLabel(self.widget_2)
         self.detection_distance_label.setObjectName(u"detection_distance_label")
 
         self.gridLayout_2.addWidget(self.detection_distance_label, 2, 0, 1, 1)
 
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.change_mode_combo_box = QComboBox(self.widget_2)
+        self.change_mode_combo_box.addItem("")
+        self.change_mode_combo_box.addItem("")
+        self.change_mode_combo_box.addItem("")
+        self.change_mode_combo_box.setObjectName(u"change_mode_combo_box")
 
-        self.gridLayout_2.addItem(self.horizontalSpacer, 3, 0, 1, 2)
+        self.gridLayout_2.addWidget(self.change_mode_combo_box, 11, 1, 1, 1)
 
         self.move_widget = QWidget(self.widget_2)
         self.move_widget.setObjectName(u"move_widget")
@@ -145,25 +127,32 @@ class Ui_MainWindow(object):
         self.gridLayout_3.addWidget(self.move_right_button, 1, 1, 1, 1)
 
 
-        self.gridLayout_2.addWidget(self.move_widget, 8, 0, 1, 2)
+        self.gridLayout_2.addWidget(self.move_widget, 16, 0, 1, 2)
 
-        self.radar_title_label = QLabel(self.widget_2)
-        self.radar_title_label.setObjectName(u"radar_title_label")
+        self.detection_distance_line_edit = QLineEdit(self.widget_2)
+        self.detection_distance_line_edit.setObjectName(u"detection_distance_line_edit")
 
-        self.gridLayout_2.addWidget(self.radar_title_label, 1, 0, 1, 2)
+        self.gridLayout_2.addWidget(self.detection_distance_line_edit, 2, 1, 1, 1)
 
-        self.change_mode_label = QLabel(self.widget_2)
-        self.change_mode_label.setObjectName(u"change_mode_label")
+        self.horizontalSpacer_11 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_2.addWidget(self.change_mode_label, 6, 0, 1, 1)
+        self.gridLayout_2.addItem(self.horizontalSpacer_11, 15, 0, 1, 2)
 
-        self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.horizontalSpacer_9 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_2.addItem(self.verticalSpacer, 0, 0, 1, 1)
+        self.gridLayout_2.addItem(self.horizontalSpacer_9, 13, 0, 1, 2)
 
-        self.verticalSpacer_2 = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
+        self.horizontalSpacer_7 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout_2.addItem(self.verticalSpacer_2, 9, 0, 1, 1)
+        self.gridLayout_2.addItem(self.horizontalSpacer_7, 8, 0, 1, 2)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_2.addItem(self.horizontalSpacer, 3, 0, 1, 2)
+
+        self.horizontalSpacer_12 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_2.addItem(self.horizontalSpacer_12, 14, 0, 1, 2)
 
 
         self.gridLayout.addWidget(self.widget_2, 0, 3, 2, 1)
@@ -189,19 +178,73 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
 
         QMetaObject.connectSlotsByName(MainWindow)
+        
+        MainWindow.setStyleSheet(f"""
+        QLabel {{
+            color: {self.widget1.radar_colors['LINE']};
+        }}
+
+        QPushButton {{
+            background-color: transparent;
+
+            border: 2px solid {self.widget1.radar_colors['LINE']};
+            border-radius: 5px;
+
+            color: {self.widget1.radar_colors['LINE']};
+        }}
+
+        QLineEdit {{
+            background-color: transparent;
+
+            border: 2px solid {self.widget1.radar_colors['LINE']};
+            border-radius: 5px;
+
+            color: {self.widget1.radar_colors['LINE']};
+        }}
+
+        QComboBox {{
+            background-color: transparent;
+
+            border: 2px solid {self.widget1.radar_colors['LINE']};
+            border-radius: 5px;
+
+            color: {self.widget1.radar_colors['LINE']};
+
+            padding: 1px 18px 1px 3px;
+        }}
+
+        QComboBox::drop-down {{
+            background-color: transparent;
+
+            border: none;
+        }}
+
+        QComboBox QAbstractItemView {{
+            border: 2px solid {self.widget1.radar_colors['LINE']};
+
+            background-color: transparent;
+            selection-background-color: {self.widget1.radar_colors['LINE']};
+
+            color: {self.widget1.radar_colors['LINE']};
+        }}""")
     # setupUi
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"Radar", None))
+        self.change_color_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt; font-weight:700;\">Cambiar color:</span></p></body></html>", None))
+        self.radar_title_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:700;\">Controlador</span></p></body></html>", None))
+        self.change_detection_distance_button.setText(QCoreApplication.translate("MainWindow", u"Cambiar distancia de detecci\u00f3n", None))
+        self.change_mode_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt; font-weight:700;\">Cambiar modo:</span></p></body></html>", None))
+        self.change_color_combo_box.setItemText(0, QCoreApplication.translate("MainWindow", u"Verde", None))
+        self.change_color_combo_box.setItemText(1, QCoreApplication.translate("MainWindow", u"Rojo", None))
+        self.change_color_combo_box.setItemText(2, QCoreApplication.translate("MainWindow", u"Azul", None))
+
+        self.detection_distance_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt; font-weight:700;\">Distancia de detecci\u00f3n:</span></p></body></html>", None))
         self.change_mode_combo_box.setItemText(0, QCoreApplication.translate("MainWindow", u"Autom\u00e1tico", None))
         self.change_mode_combo_box.setItemText(1, QCoreApplication.translate("MainWindow", u"Manual", None))
         self.change_mode_combo_box.setItemText(2, QCoreApplication.translate("MainWindow", u"Seguimiento", None))
 
-        self.change_color_button.setText(QCoreApplication.translate("MainWindow", u"Cambiar Color", None))
-        self.detection_distance_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt; font-weight:700;\">Distancia de detecci\u00f3n:</span></p></body></html>", None))
         self.move_left_button.setText(QCoreApplication.translate("MainWindow", u"Izquierda", None))
         self.move_right_button.setText(QCoreApplication.translate("MainWindow", u"Derecha", None))
-        self.radar_title_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:700;\">Controlador</span></p></body></html>", None))
-        self.change_mode_label.setText(QCoreApplication.translate("MainWindow", u"<html><head/><body><p><span style=\" font-size:12pt; font-weight:700;\">Cambiar Modo:</span></p></body></html>", None))
     # retranslateUi
 
